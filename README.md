@@ -12,7 +12,7 @@ This project establishes a centralized platform enabling interns in Belgium to e
 As an intern, shadowing customer-facing meetings is one of the most effective ways to learn. But finding those meetings is painful:
 
 - **Manual outreach is inefficient.** Interns have to individually message FTEs asking if they have any upcoming meetings available to shadow. This is a lot of work for a "maybe".
-- **FTEs forget.** Even when an FTE agrees, they may forget to loop the intern in when the meeting actually happens.
+- **FTEs forget.** Even when an FTE agrees, they may forget to loop the intern in when the meeting actually happens, or not know which intern to invite.
 - **Some FTEs are too new themselves.** Not every FTE is in a position to bring interns into their calls, making cold outreach a gamble.
 - **Some meetings simply cannot be shadowed.** Some meetings might be sensitive or the customer might prefer to not have interns shadow the meeting.
 
