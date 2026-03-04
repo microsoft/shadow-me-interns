@@ -109,8 +109,13 @@ A user-facing application built on React that dynamically retrieves available sc
 - **Database Polling:** Rather than refreshing constantly, TanStack Query (`useQuery`) polls the database every 5 seconds. This fetches records effectively without a constant UI refresh penalty, tracking valid objects inserted via the Logic Apps workflow.
 - **Authentication:** Sessions are managed locally. Validation happens through temporary code processes sent via email, matching Microsoft `@microsoft.com` rules. Validated code responses store secure session markers in the browser cache to bypass future lockouts.
 
-> [!NOTE]
-> For FTEs, it's important that these invites don't land in the wrong hands, so verifying that the user who is accessing the tool is crucial, therefore there is a preconfigured list (whitelist) of people that can access the tool right now. (Only Belgium interns)
+## Security
+
+- **Protected meeting data.** Meeting invites often contain sensitive customer information (join links, attendee lists, agenda notes). Access to the dashboard is restricted so this data doesn't end up in the wrong hands.
+- **Passwordless authentication.** Interns log in by entering their `@microsoft.com` email address. A one-time 6-digit verification code is sent to that address and must be confirmed before access is granted — no passwords to manage or leak.
+- **Dedicated whitelist.** Only a preconfigured list of Belgium intern email addresses can request a code. Any unrecognised email is rejected at the first step, preventing unauthorized access entirely.
+- **Session tokens.** After successful verification a signed JWT is issued (7-day expiry) and stored in the browser. Subsequent visits skip the login flow as long as the token is valid, keeping the experience frictionless.
+- **Private shadow inbox.** The inbox address is not published anywhere in this repository or in the frontend. To obtain it, contact the project maintainer directly on Teams or Outlook. This prevents external or automated misuse of the ingestion pipeline.
 
 ## Contributing
 
