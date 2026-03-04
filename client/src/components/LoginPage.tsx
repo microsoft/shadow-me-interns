@@ -17,7 +17,7 @@ import {
   KeyRegular,
   MailRegular,
 } from "@fluentui/react-icons";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type MouseEvent } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { requestCode, verifyCode } from "../utils/api";
 
@@ -104,7 +104,9 @@ export function LoginPage() {
     }
   };
 
-  const handleBack = () => {
+  const handleBack = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setStep("email");
     setCode("");
     setError(null);
@@ -128,7 +130,9 @@ export function LoginPage() {
 
         {step === "email" ? (
           <form onSubmit={handleRequestCode} className={styles.form}>
-            <Body1>Sign in with your Microsoft email to continue.</Body1>
+            <Body1>
+              Sign in with your Microsoft email to continue. (BE Interns Only)
+            </Body1>
 
             <Field label="Email address" required>
               <Input
@@ -178,6 +182,7 @@ export function LoginPage() {
             <div className={styles.actions}>
               <Button
                 appearance="secondary"
+                type="button"
                 onClick={handleBack}
                 disabled={loading}
                 icon={<ArrowLeftRegular />}
