@@ -60,6 +60,10 @@ export function DeleteDialog({
             <Body1>
               Are you sure you want to delete{" "}
               <strong>{meeting?.subject}</strong>? This action cannot be undone.
+            </Body1>{" "}
+            <br />
+            <Body1 style={{ color: "red", marginTop: "8px" }}>
+              Warning: This deletes the meeting for everyone.
             </Body1>
           </DialogContent>
           <DialogActions>
