@@ -18,6 +18,7 @@ import {
   DeleteRegular,
   LocationRegular,
   PeopleRegular,
+  PersonRegular,
 } from "@fluentui/react-icons";
 import type { Meeting } from "../utils/types";
 
@@ -150,6 +151,11 @@ export function MeetingCard({
       />
 
       <div className={styles.details}>
+        <div className={styles.row}>
+          <PersonRegular fontSize={16} />
+          <Caption1>{meeting.original_sender}</Caption1>
+        </div>
+
         <div className={styles.row}>
           <CalendarRegular fontSize={16} />
           <Caption1>{formatDate(meeting.date)}</Caption1>
