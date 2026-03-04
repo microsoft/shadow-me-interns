@@ -1,5 +1,5 @@
 {
-  "name": "bun-react-template",
+  "name": "shadow-me-client",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,13 +9,16 @@
     "start": "NODE_ENV=production bun src/index.ts"
   },
   "dependencies": {
-    "@fluentui/react": "^8.125.5",
+    "@fluentui/react-components": "^9.56.0",
+    "@fluentui/react-icons": "^2.0.271",
+    "@tanstack/react-query": "^5.90.21",
     "react": "^19",
     "react-dom": "^19"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/bun": "latest"
+    "typescript": "^5.9.3"
   }
 }

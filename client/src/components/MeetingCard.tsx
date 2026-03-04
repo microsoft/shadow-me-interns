@@ -1,0 +1,220 @@
+import {
+  Card,
+  CardHeader,
+  CardFooter,
+  Body1,
+  Caption1,
+  Badge,
+  Button,
+  makeStyles,
+  tokens,
+} from "@fluentui/react-components";
+import {
+  CalendarRegular,
+  ClockRegular,
+  LocationRegular,
+  PersonRegular,
+  PeopleRegular,
+  CalendarAddRegular,
+  CheckmarkCircleRegular,
+  ArrowForwardRegular,
+} from "@fluentui/react-icons";
+import type { Meeting } from "../utils/types";
+
+const useStyles = makeStyles({
+  card: {
+    width: "100%",
+  },
+  details: {
+    display: "flex",
+    flexDirection: "column",
+    gap: tokens.spacingVerticalXS,
+    padding: `${tokens.spacingVerticalS} 0`,
+  },
+  row: {
+    display: "flex",
+    alignItems: "center",
+    gap: tokens.spacingHorizontalS,
+    color: tokens.colorNeutralForeground2,
+  },
+  footer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  badges: {
+    display: "flex",
+    gap: tokens.spacingHorizontalXS,
+    flexWrap: "wrap",
+  },
+  actions: {
+    display: "flex",
+    gap: tokens.spacingHorizontalXS,
+  },
+  forwarder: {
+    display: "flex",
+    alignItems: "center",
+    gap: tokens.spacingHorizontalXS,
+    color: tokens.colorNeutralForeground3,
+  },
+});
+
+interface MeetingCardProps {
+  meeting: Meeting;
+  userEmail: string;
+  onJoin: (meeting: Meeting) => void;
+}
+
+/** Format "2025-03-15" → "Sat, Mar 15, 2025" */
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+/** Format "14:00" → "2:00 PM" */
+function formatTime(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  const suffix = h! >= 12 ? "PM" : "AM";
+  const h12 = h! % 12 || 12;
+  return `${h12}:${String(m).padStart(2, "0")} ${suffix}`;
+}
+
+export function MeetingCard({ meeting, userEmail, onJoin }: MeetingCardProps) {
+  const styles = useStyles();
+
+  const spotsLeft = meeting.capacity - meeting.joined_interns.length;
+  const isFull = spotsLeft <= 0;
+  const hasJoined = meeting.joined_interns.includes(userEmail);
+
+  /** Build an Outlook Web deep link that opens a pre-filled new event form. */
+  const getOutlookLink = () => {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const [y, mo, d] = meeting.date.split("-").map(Number);
+    const [sh, sm] = meeting.start_time.split(":").map(Number);
+    const [eh, em] = meeting.end_time.split(":").map(Number);
+
+    const startdt = `${y}-${pad(mo!)}-${pad(d!)}T${pad(sh!)}:${pad(sm!)}:00`;
+    const enddt = `${y}-${pad(mo!)}-${pad(d!)}T${pad(eh!)}:${pad(em!)}:00`;
+
+    const params = new URLSearchParams({
+      subject: meeting.subject,
+      startdt,
+      enddt,
+      ...(meeting.location && { location: meeting.location }),
+      ...(meeting.meeting_link && {
+        body: `Join link: ${meeting.meeting_link}`,
+      }),
+    });
+
+    return `https://outlook.office.com/calendar/0/deeplink/compose?${params.toString()}`;
+  };
+
+  return (
+    <Card className={styles.card} appearance="outline">
+      <CardHeader
+        header={
+          <Body1>
+            <strong>{meeting.subject}</strong>
+          </Body1>
+        }
+        description={
+          <Caption1>
+            {meeting.team}
+            {meeting.sector ? ` · ${meeting.sector}` : ""}
+          </Caption1>
+        }
+      />
+
+      <div className={styles.details}>
+        <div className={styles.row}>
+          <CalendarRegular fontSize={16} />
+          <Caption1>{formatDate(meeting.date)}</Caption1>
+        </div>
+
+        <div className={styles.row}>
+          <ClockRegular fontSize={16} />
+          <Caption1>
+            {formatTime(meeting.start_time)} – {formatTime(meeting.end_time)}
+          </Caption1>
+        </div>
+
+        {meeting.location && (
+          <div className={styles.row}>
+            <LocationRegular fontSize={16} />
+            <Caption1>{meeting.location}</Caption1>
+          </div>
+        )}
+
+        {meeting.role && (
+          <div className={styles.row}>
+            <PersonRegular fontSize={16} />
+            <Caption1>{meeting.role}</Caption1>
+          </div>
+        )}
+
+        {meeting.forwarded_by_name && (
+          <div className={styles.forwarder}>
+            <ArrowForwardRegular fontSize={16} />
+            <Caption1>Forwarded by {meeting.forwarded_by_name}</Caption1>
+          </div>
+        )}
+      </div>
+
+      <CardFooter className={styles.footer}>
+        <div className={styles.badges}>
+          <Badge
+            appearance="tint"
+            color={isFull ? "danger" : "informative"}
+            icon={<PeopleRegular />}
+          >
+            {isFull
+              ? "Full"
+              : `${meeting.joined_interns.length}/${meeting.capacity} joined`}
+          </Badge>
+
+          {hasJoined && (
+            <Badge
+              appearance="tint"
+              color="success"
+              icon={<CheckmarkCircleRegular />}
+            >
+              Joined
+            </Badge>
+          )}
+        </div>
+
+        <div className={styles.actions}>
+          {!isFull && (
+            <Button
+              appearance="subtle"
+              icon={<CalendarAddRegular />}
+              size="small"
+              as="a"
+              href={getOutlookLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Add to calendar
+            </Button>
+          )}
+
+          {!hasJoined && (
+            <Button
+              appearance="primary"
+              size="small"
+              disabled={isFull}
+              onClick={() => onJoin(meeting)}
+            >
+              Join
+            </Button>
+          )}
+        </div>
+      </CardFooter>
+    </Card>
+  );
+}
