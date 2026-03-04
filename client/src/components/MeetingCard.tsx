@@ -18,7 +18,6 @@ import {
   DeleteRegular,
   LocationRegular,
   PeopleRegular,
-  PersonRegular,
 } from "@fluentui/react-icons";
 import type { Meeting } from "../utils/types";
 
@@ -26,12 +25,6 @@ const useStyles = makeStyles({
   card: {
     width: "100%",
     height: "100%",
-    position: "relative" as const,
-  },
-  deleteBtn: {
-    position: "absolute" as const,
-    top: tokens.spacingVerticalS,
-    right: tokens.spacingHorizontalS,
   },
   details: {
     display: "flex",
@@ -133,13 +126,6 @@ export function MeetingCard({
 
   return (
     <Card className={styles.card} appearance="outline">
-      <Button
-        className={styles.deleteBtn}
-        appearance="subtle"
-        icon={<DeleteRegular />}
-        size="small"
-        onClick={() => onDelete(meeting)}
-      />
       <CardHeader
         header={
           <Body1>
@@ -148,9 +134,18 @@ export function MeetingCard({
         }
         description={
           <Caption1>
+            {meeting.role ? `${meeting.role} · ` : ""}
             {meeting.team}
             {meeting.sector ? ` · ${meeting.sector}` : ""}
           </Caption1>
+        }
+        action={
+          <Button
+            appearance="subtle"
+            icon={<DeleteRegular />}
+            size="small"
+            onClick={() => onDelete(meeting)}
+          />
         }
       />
 
@@ -171,13 +166,6 @@ export function MeetingCard({
           <div className={styles.row}>
             <LocationRegular fontSize={16} />
             <Caption1>{meeting.location}</Caption1>
-          </div>
-        )}
-
-        {meeting.role && (
-          <div className={styles.row}>
-            <PersonRegular fontSize={16} />
-            <Caption1>{meeting.role}</Caption1>
           </div>
         )}
 
