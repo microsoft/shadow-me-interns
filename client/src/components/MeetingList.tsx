@@ -14,7 +14,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useMeetings } from "../hooks/useMeetings";
-import { leaveMeeting as leaveMeetingApi } from "../utils/api";
+import {
+  deleteMeeting as deleteMeetingApi,
+  leaveMeeting as leaveMeetingApi,
+} from "../utils/api";
 import type { Meeting } from "../utils/types";
 import { EmptyState } from "./EmptyState";
 import { FilterBar, useFilteredMeetings } from "./FilterBar";
@@ -84,6 +87,29 @@ export function MeetingList() {
         <Toast>
           <ToastTitle>
             {err instanceof Error ? err.message : "Failed to leave meeting"}
+          </ToastTitle>
+        </Toast>,
+        { intent: "error" },
+      );
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteMeetingApi(id),
+    onSuccess: () => {
+      dispatchToast(
+        <Toast>
+          <ToastTitle>Meeting deleted</ToastTitle>
+        </Toast>,
+        { intent: "success" },
+      );
+      queryClient.invalidateQueries({ queryKey: ["meetings"] });
+    },
+    onError: (err) => {
+      dispatchToast(
+        <Toast>
+          <ToastTitle>
+            {err instanceof Error ? err.message : "Failed to delete meeting"}
           </ToastTitle>
         </Toast>,
         { intent: "error" },
@@ -172,6 +198,7 @@ export function MeetingList() {
                   userEmail={email ?? ""}
                   onJoin={setJoinTarget}
                   onLeave={(mt) => leaveMutation.mutate(mt.id)}
+                  onDelete={(mt) => deleteMutation.mutate(mt.id)}
                 />
               ))}
             </div>

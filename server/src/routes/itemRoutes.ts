@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { sendJoinNotification } from "../utils/email";
 import { generateICS } from "../utils/ics";
 import {
+  deleteMeeting,
   getAllMeetings,
   getMeetingById,
   joinMeeting,
@@ -112,6 +113,22 @@ router.post("/:id/leave", async (req: Request, res: Response) => {
   } catch (err: unknown) {
     const error = err as Error & { status?: number };
     console.error("Error leaving meeting:", error.message);
+    res.status(error.status || 500).json({ message: error.message });
+  }
+});
+
+/**
+ * DELETE /api/items/:id
+ *
+ * Permanently removes a meeting document from the database.
+ */
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    await deleteMeeting(req.params.id as string);
+    res.json({ message: "Meeting deleted" });
+  } catch (err: unknown) {
+    const error = err as Error & { status?: number };
+    console.error("Error deleting meeting:", error.message);
     res.status(error.status || 500).json({ message: error.message });
   }
 });

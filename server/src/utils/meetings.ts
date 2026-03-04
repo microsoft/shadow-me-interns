@@ -115,3 +115,12 @@ export const leaveMeeting = async (
 
   return resource as MeetingDoc;
 };
+
+/** Delete a meeting document by ID. */
+export const deleteMeeting = async (id: string): Promise<void> => {
+  const meeting = await getMeetingById(id);
+  if (!meeting)
+    throw Object.assign(new Error("Meeting not found"), { status: 404 });
+
+  await container.item(meeting.id, meeting.id).delete();
+};

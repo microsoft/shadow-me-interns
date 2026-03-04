@@ -15,6 +15,7 @@ import {
   CalendarRegular,
   CheckmarkCircleRegular,
   ClockRegular,
+  DeleteRegular,
   LocationRegular,
   PeopleRegular,
   PersonRegular,
@@ -25,6 +26,12 @@ const useStyles = makeStyles({
   card: {
     width: "100%",
     height: "100%",
+    position: "relative" as const,
+  },
+  deleteBtn: {
+    position: "absolute" as const,
+    top: tokens.spacingVerticalS,
+    right: tokens.spacingHorizontalS,
   },
   details: {
     display: "flex",
@@ -66,6 +73,7 @@ interface MeetingCardProps {
   userEmail: string;
   onJoin: (meeting: Meeting) => void;
   onLeave: (meeting: Meeting) => void;
+  onDelete: (meeting: Meeting) => void;
 }
 
 /** Format "2025-03-15" → "Sat, Mar 15, 2025" */
@@ -92,6 +100,7 @@ export function MeetingCard({
   userEmail,
   onJoin,
   onLeave,
+  onDelete,
 }: MeetingCardProps) {
   const styles = useStyles();
 
@@ -124,6 +133,13 @@ export function MeetingCard({
 
   return (
     <Card className={styles.card} appearance="outline">
+      <Button
+        className={styles.deleteBtn}
+        appearance="subtle"
+        icon={<DeleteRegular />}
+        size="small"
+        onClick={() => onDelete(meeting)}
+      />
       <CardHeader
         header={
           <Body1>
