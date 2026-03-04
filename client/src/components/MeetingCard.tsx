@@ -101,6 +101,7 @@ export function MeetingCard({
   const spotsLeft = meeting.capacity - meeting.joined_interns.length;
   const isFull = spotsLeft <= 0;
   const hasJoined = meeting.joined_interns.includes(userEmail);
+  const isViewOnly = userEmail === "viewonlybe@microsoft.com";
 
   /** Build an Outlook Web deep link that opens a pre-filled new event form. */
   const getOutlookLink = () => {
@@ -145,6 +146,7 @@ export function MeetingCard({
             appearance="subtle"
             icon={<DeleteRegular />}
             size="small"
+            disabled={isViewOnly}
             onClick={() => onDelete(meeting)}
           />
         }
@@ -216,10 +218,13 @@ export function MeetingCard({
               appearance="subtle"
               icon={<CalendarAddRegular />}
               size="small"
-              as="a"
-              href={getOutlookLink()}
-              target="_blank"
-              rel="noopener noreferrer"
+              disabled={isViewOnly}
+              {...(!isViewOnly && {
+                as: "a" as const,
+                href: getOutlookLink(),
+                target: "_blank",
+                rel: "noopener noreferrer",
+              })}
             >
               Add to calendar
             </Button>
@@ -229,6 +234,7 @@ export function MeetingCard({
             <Button
               appearance="subtle"
               size="small"
+              disabled={isViewOnly}
               onClick={() => onLeave(meeting)}
             >
               Leave
@@ -237,7 +243,7 @@ export function MeetingCard({
             <Button
               appearance="primary"
               size="small"
-              disabled={isFull}
+              disabled={isFull || isViewOnly}
               onClick={() => onJoin(meeting)}
             >
               Join

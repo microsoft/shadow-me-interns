@@ -16,7 +16,7 @@ interface Config {
     authContainer: string;
   };
   resendApiKey: string;
-  testBypassEmail: string;
+  viewonlyBypassEmail: string;
 }
 
 const config: Config = {
@@ -36,7 +36,9 @@ const config: Config = {
     authContainer: process.env.COSMOS_AUTH_CONTAINER || "auth_codes",
   },
   resendApiKey: process.env.RESEND_API_KEY || "",
-  testBypassEmail: (process.env.TEST_BYPASS_EMAIL || "").toLowerCase().trim(),
+  viewonlyBypassEmail: (process.env.VIEWONLY_BYPASS_EMAIL || "")
+    .toLowerCase()
+    .trim(),
 };
 
 export default config;
