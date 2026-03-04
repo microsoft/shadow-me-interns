@@ -1,5 +1,7 @@
 // express app config
 import express from "express";
+import cors from "cors";
+import config from "./config/config";
 import { errorHandler } from "./middlewares/errorHandler";
 import { authMiddleware } from "./middlewares/authMiddleware";
 import authRoutes from "./routes/authRoutes";
@@ -7,6 +9,7 @@ import itemRoutes from "./routes/itemRoutes";
 
 const app = express();
 
+app.use(cors({ origin: config.clientUrl, credentials: true }));
 app.use(express.json());
 
 // Health check
