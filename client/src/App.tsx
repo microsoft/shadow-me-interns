@@ -5,10 +5,8 @@ import {
   makeStyles,
   webLightTheme,
 } from "@fluentui/react-components";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 import { Header } from "./components/Header";
 import { LoginPage } from "./components/LoginPage";
 import { MeetingList } from "./components/MeetingList";
@@ -16,15 +14,6 @@ import { AuthProvider, useAuth } from "./hooks/useAuth";
 import "./index.css";
 
 const TOASTER_ID = "global";
-
-// Persist QueryClient across HMR reloads to avoid "not a constructor" errors
-const _global = globalThis as typeof globalThis & {
-  __queryClient?: QueryClient;
-};
-if (!_global.__queryClient) {
-  _global.__queryClient = new QueryClient();
-}
-const queryClient = _global.__queryClient;
 
 const useStyles = makeStyles({
   loading: {
@@ -60,6 +49,8 @@ function AppContent() {
 }
 
 export function App() {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <QueryClientProvider client={queryClient}>
       <FluentProvider theme={webLightTheme}>
