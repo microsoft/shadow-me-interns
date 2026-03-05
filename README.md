@@ -1,4 +1,4 @@
-# Shadow Me Interns
+# Intern Support
 
 ## Project Overview
 
@@ -17,6 +17,8 @@ As an intern, shadowing customer-facing meetings is one of the most effective wa
 - **Some meetings simply cannot be shadowed.** Some meetings might be sensitive or the customer might prefer to not have interns shadow the meeting.
 
 The core problem: there was no central place where interns could browse meetings that are explicitly available for shadowing.
+
+**This platform allows Interns to get access to real customer-facing meetings, and FTEs get a frictionless way to support intern development without extra coordination overhead.**
 
 ## How It Works
 
