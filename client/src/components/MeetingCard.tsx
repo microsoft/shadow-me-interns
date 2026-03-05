@@ -61,6 +61,9 @@ const useStyles = makeStyles({
     gap: tokens.spacingHorizontalXS,
     color: tokens.colorNeutralForeground3,
   },
+  link: {
+    color: tokens.colorBrandForeground1,
+  },
 });
 
 interface MeetingCardProps {
@@ -157,7 +160,10 @@ export function MeetingCard({
         <div className={styles.row}>
           <PersonRegular fontSize={16} />
           <Caption1>
-            <a href={`mailto:${meeting.original_sender}`}>
+            <a
+              className={styles.link}
+              href={`mailto:${meeting.original_sender}`}
+            >
               {meeting.original_sender}
             </a>
           </Caption1>

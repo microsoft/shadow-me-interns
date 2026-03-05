@@ -10,7 +10,11 @@ import {
   MenuTrigger,
   tokens,
 } from "@fluentui/react-components";
-import { SignOutRegular } from "@fluentui/react-icons";
+import {
+  SignOutRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
+} from "@fluentui/react-icons";
 import { useAuth } from "../hooks/useAuth";
 
 const useStyles = makeStyles({
@@ -51,9 +55,16 @@ export type Page = "meetings" | "interns";
 interface HeaderProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
+  isDark: boolean;
+  onToggleTheme: () => void;
 }
 
-export function Header({ currentPage, onNavigate }: HeaderProps) {
+export function Header({
+  currentPage,
+  onNavigate,
+  isDark,
+  onToggleTheme,
+}: HeaderProps) {
   const styles = useStyles();
   const { email, logout } = useAuth();
 
@@ -80,6 +91,12 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
       </div>
 
       <div className={styles.user}>
+        <Button
+          appearance="subtle"
+          icon={isDark ? <WeatherSunnyRegular /> : <WeatherMoonRegular />}
+          size="small"
+          onClick={onToggleTheme}
+        />
         <Button
           appearance="subtle"
           icon={

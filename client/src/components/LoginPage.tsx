@@ -16,6 +16,8 @@ import {
   ArrowLeftRegular,
   KeyRegular,
   MailRegular,
+  WeatherMoonRegular,
+  WeatherSunnyRegular,
 } from "@fluentui/react-icons";
 import { useState, type FormEvent, type MouseEvent } from "react";
 import { useAuth } from "../hooks/useAuth";
@@ -28,6 +30,12 @@ const useStyles = makeStyles({
     justifyContent: "center",
     minHeight: "100vh",
     padding: tokens.spacingHorizontalXL,
+    position: "relative" as const,
+  },
+  themeToggle: {
+    position: "absolute" as const,
+    top: tokens.spacingVerticalM,
+    right: tokens.spacingHorizontalM,
   },
   card: {
     width: "100%",
@@ -57,7 +65,12 @@ const useStyles = makeStyles({
 
 type Step = "email" | "code";
 
-export function LoginPage() {
+interface LoginPageProps {
+  isDark: boolean;
+  onToggleTheme: () => void;
+}
+
+export function LoginPage({ isDark, onToggleTheme }: LoginPageProps) {
   const styles = useStyles();
   const { login } = useAuth();
 
@@ -114,6 +127,13 @@ export function LoginPage() {
 
   return (
     <div className={styles.container}>
+      <Button
+        className={styles.themeToggle}
+        appearance="subtle"
+        icon={isDark ? <WeatherSunnyRegular /> : <WeatherMoonRegular />}
+        size="small"
+        onClick={onToggleTheme}
+      />
       <Card className={styles.card} appearance="outline">
         <div className={styles.header}>
           <Title3 className={styles.title} block>
