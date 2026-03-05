@@ -54,7 +54,7 @@ export const generateICS = (meeting: MeetingDoc): string => {
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
-    `UID:${meeting.id}@shadowmeinterns`,
+    `UID:${meeting.id}@intern.support`,
     `DTSTAMP:${now}`,
     `DTSTART:${dtStart}`,
     `DTEND:${dtEnd}`,

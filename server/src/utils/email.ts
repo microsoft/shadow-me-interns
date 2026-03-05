@@ -12,7 +12,7 @@ export const sendVerificationEmail = async (
   code: string,
 ): Promise<void> => {
   const { error } = await resend.emails.send({
-    from: "Intern Support <noreply@shadowmeinterns.me>",
+    from: "Intern Support <noreply@intern.support>",
     to: [to],
     subject: "Your Intern Support verification code",
     html: `
@@ -55,7 +55,7 @@ export const sendJoinNotification = async (
     : "forwarded to Intern Support";
 
   const { error } = await resend.emails.send({
-    from: "Intern Support <noreply@shadowmeinterns.me>",
+    from: "Intern Support <noreply@intern.support>",
     to: recipients,
     subject: `An intern will shadow: ${meeting.subject}`,
     html: `
@@ -68,7 +68,7 @@ export const sendJoinNotification = async (
           <tr><td style="padding:6px 12px;color:#666">Time</td><td style="padding:6px 12px">${meeting.start_time} - ${meeting.end_time}</td></tr>
           <tr><td style="padding:6px 12px;color:#666">Location</td><td style="padding:6px 12px">${meeting.location || "Teams"}</td></tr>
         </table>
-        <p style="color:#666;font-size:13px">This notification was sent automatically by the <a href="https://shadowmeinterns.me" style="color:#0078d4">Intern Support</a> tool.</p>
+        <p style="color:#666;font-size:13px">This notification was sent automatically by the <a href="https://intern.support" style="color:#0078d4">Intern Support</a> tool.</p>
       </div>
     `,
   });
