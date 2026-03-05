@@ -1,5 +1,5 @@
-const TOKEN_KEY = "shadow_me_token";
-const EMAIL_KEY = "shadow_me_email";
+const TOKEN_KEY = "intern_support_token";
+const EMAIL_KEY = "intern_support_email";
 
 export const getToken = (): string | null => localStorage.getItem(TOKEN_KEY);
 export const setToken = (token: string): void =>

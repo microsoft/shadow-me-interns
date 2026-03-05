@@ -60,7 +60,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
   return (
     <header className={styles.header}>
       <div className={styles.left}>
-        <span className={styles.logo}>Shadow Me Interns</span>
+        <span className={styles.logo}>Intern Support</span>
         <nav className={styles.nav}>
           <Button
             appearance={currentPage === "meetings" ? "subtle" : "transparent"}

@@ -117,9 +117,9 @@ export function LoginPage() {
       <Card className={styles.card} appearance="outline">
         <div className={styles.header}>
           <Title3 className={styles.title} block>
-            Shadow Me Interns
+            Intern Support
           </Title3>
-          <Caption1>Find a meeting to shadow</Caption1>
+          <Caption1>Get support from interns</Caption1>
         </div>
 
         {error && (

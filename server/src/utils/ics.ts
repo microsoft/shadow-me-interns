@@ -50,7 +50,7 @@ export const generateICS = (meeting: MeetingDoc): string => {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Shadow Me Interns//EN",
+    "PRODID:-//Intern Support//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",

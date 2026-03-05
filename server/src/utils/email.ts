@@ -12,12 +12,12 @@ export const sendVerificationEmail = async (
   code: string,
 ): Promise<void> => {
   const { error } = await resend.emails.send({
-    from: "Shadow Me Interns <noreply@shadowmeinterns.me>",
+    from: "Intern Support <noreply@shadowmeinterns.me>",
     to: [to],
-    subject: "Your Shadow Me verification code",
+    subject: "Your Intern Support verification code",
     html: `
       <div style="font-family:Segoe UI,sans-serif;max-width:480px;margin:0 auto;padding:24px">
-        <h2 style="color:#0078d4">Shadow Me Interns</h2>
+        <h2 style="color:#0078d4">Intern Support</h2>
         <p>Your verification code is:</p>
         <p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#0078d4">${code}</p>
         <p style="color:#666;font-size:13px">This code expires in 1 hour. If you didn't request this, you can safely ignore this email.</p>
@@ -52,15 +52,15 @@ export const sendJoinNotification = async (
 
   const forwarderLine = meeting.forwarded_by_name
     ? `forwarded by ${meeting.forwarded_by_name}`
-    : "forwarded to Shadow Me Interns";
+    : "forwarded to Intern Support";
 
   const { error } = await resend.emails.send({
-    from: "Shadow Me Interns <noreply@shadowmeinterns.me>",
+    from: "Intern Support <noreply@shadowmeinterns.me>",
     to: recipients,
     subject: `An intern will shadow: ${meeting.subject}`,
     html: `
       <div style="font-family:Segoe UI,sans-serif;max-width:520px;margin:0 auto;padding:24px">
-        <h2 style="color:#0078d4">Shadow Me Interns</h2>
+        <h2 style="color:#0078d4">Intern Support</h2>
         <p><strong>${internEmail}</strong> has confirmed they will be shadowing the following meeting (${forwarderLine}):</p>
         <table style="border-collapse:collapse;width:100%;margin:16px 0">
           <tr><td style="padding:6px 12px;color:#666">Subject</td><td style="padding:6px 12px">${meeting.subject}</td></tr>
@@ -68,7 +68,7 @@ export const sendJoinNotification = async (
           <tr><td style="padding:6px 12px;color:#666">Time</td><td style="padding:6px 12px">${meeting.start_time} - ${meeting.end_time}</td></tr>
           <tr><td style="padding:6px 12px;color:#666">Location</td><td style="padding:6px 12px">${meeting.location || "Teams"}</td></tr>
         </table>
-        <p style="color:#666;font-size:13px">This notification was sent automatically by the <a href="https://shadowmeinterns.me" style="color:#0078d4">Shadow Me Interns</a> tool.</p>
+        <p style="color:#666;font-size:13px">This notification was sent automatically by the <a href="https://shadowmeinterns.me" style="color:#0078d4">Intern Support</a> tool.</p>
       </div>
     `,
   });

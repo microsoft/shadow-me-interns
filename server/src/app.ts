@@ -15,7 +15,7 @@ app.use(express.json());
 
 // Health check
 app.get("/", (_req, res) => {
-  res.json({ status: "ok", message: "Shadow Me Interns API" });
+  res.json({ status: "ok", message: "Intern Support API" });
 });
 
 // Auth routes (public — no JWT required)
