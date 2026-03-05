@@ -143,7 +143,7 @@ export function MeetingList() {
   return (
     <div className={styles.container}>
       <Title2 className={styles.title} block>
-        Available Meetings
+        Shadow Meetings
       </Title2>
 
       {error && (
