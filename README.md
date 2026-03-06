@@ -4,9 +4,9 @@ https://intern.support - not live
 
 ## Project Overview
 
-This project establishes a centralized platform enabling interns in Belgium to easily locate and shadow (technical) meetings. It accomplishes this by parsing unstructured email inputs sent to a "shadow inbox" by Full-Time Employees (FTEs), structuring the extracted data into explicit JSON objects using AI via Logic Apps, and storing the entries in Azure CosmosDB. A React-based frontend polls the backing server to present the collected schedule to end users.
+This project establishes a centralized platform enabling interns in Belgium to easily discover and join (technical) meetings. It accomplishes this by parsing unstructured email inputs sent to a shared inbox by Full-Time Employees (FTEs), structuring the extracted data into explicit JSON objects using AI via Logic Apps, and storing the entries in Azure CosmosDB. A React-based frontend polls the backing server to present the collected schedule to end users.
 
-**This platform allows Interns to get access to real customer-facing meetings, and FTEs get a frictionless way to support intern development without extra coordination overhead.**
+**This platform allows Interns to get access to real customer-facing meetings, and FTEs get a frictionless way to find intern support for their meetings without extra coordination overhead.**
 
 ## Demo
 
@@ -14,39 +14,39 @@ This project establishes a centralized platform enabling interns in Belgium to e
 
 ## Why This Exists
 
-As an intern, shadowing customer-facing meetings is one of the most effective ways to learn. But finding those meetings is painful:
+As an intern, joining customer-facing meetings is one of the most effective ways to learn and contribute. But finding those meetings is painful:
 
-- **Manual outreach is inefficient.** Interns have to individually message FTEs asking if they have any upcoming meetings available to shadow. This is a lot of work for a "maybe".
+- **Manual outreach is inefficient.** Interns have to individually message FTEs asking if they have any upcoming meetings available to join. This is a lot of work for a "maybe".
 - **FTEs forget.** Even when an FTE agrees, they may forget to loop the intern in when the meeting actually happens, or not know which intern to invite.
 - **Some FTEs are too new themselves.** Not every FTE is in a position to bring interns into their calls, making cold outreach a gamble.
-- **Some meetings simply cannot be shadowed.** Some meetings might be sensitive or the customer might prefer to not have interns shadow the meeting.
+- **Some meetings are not suitable.** Some meetings might be sensitive or the customer might prefer to not have interns join.
 
-The core problem: there was no central place where interns could browse meetings that are explicitly available for shadowing.
+The core problem: there was no central place where interns could browse meetings that are explicitly available for them to join.
 
 ## How It Works
 
-The solution flips the workflow. Instead of interns chasing down FTEs, FTEs opt in by forwarding a meeting invite to a shared shadow inbox. From there, the system handles everything automatically.
+The solution flips the workflow. Instead of interns chasing down FTEs, FTEs opt in by forwarding a meeting invite to a shared inbox. From there, the system handles everything automatically.
 
 ```
-FTE forwards meeting invite --> Shadow Inbox --> AI extracts details --> Cosmos DB --> Frontend dashboard
+FTE forwards meeting invite --> Shared Inbox --> AI extracts details --> Cosmos DB --> Frontend dashboard
 ```
 
-- **For FTEs:** The effort is minimal. Their existing workflow was to forward the calendar invite directly to an intern. Now they forward it to a single inbox instead. One action, all interns can see it.
-- **For Interns:** A central hub displays every shadowable meeting with details like time, host, role, and an invite link to join. No outreach needed.
+- **For FTEs:** The effort is minimal — just forward the invite to a single inbox instead of to an individual intern. The workflow stays almost identical, but now all interns can discover the meeting and self-serve. FTEs no longer need to find or coordinate with a specific intern; interested interns come to them, making it easy to get intern support when useful.
+- **For Interns:** A central hub displays every available meeting with details like time, host, role, and an invite link to join. No outreach needed.
 
 **Input:** An FTE's forwarded meeting email.
-**Output:** A live, browsable dashboard of all shadowable meetings.
+**Output:** A live, browsable dashboard of all available meetings.
 
 ## Email Metadata for FTEs
 
-When forwarding a meeting invite to the shadow inbox, FTEs can optionally include metadata in the email body to provide additional context. All fields are optional, the AI will extract what it can from the invite itself, but explicit metadata takes priority.
+When forwarding a meeting invite to the shared inbox, FTEs can optionally include metadata in the email body to provide additional context. All fields are optional, the AI will extract what it can from the invite itself, but explicit metadata takes priority.
 
 | Field        | Description                                                                                                  |
 | ------------ | ------------------------------------------------------------------------------------------------------------ |
 | **FW Name**  | FTE display name (Blank if not provided)                                                                     |
 | **FW Email** | FTE email address, used to notify which interns clicked join (Blank if not provided)                         |
 | **Subject**  | Meeting subject override                                                                                     |
-| **Capacity** | Max number of interns allowed to shadow the meeting (defaults to `1` if omitted)                             |
+| **Capacity** | Max number of interns allowed to join the meeting (defaults to `1` if omitted)                               |
 | **Role**     | FTE role, e.g. `SE`, `CSA`, `CSAM` (short forms or full forms accepted, the AI normalizes valid roles)       |
 | **Team**     | Relevant team, e.g. `AI Apps`, `Data`, `Cloud & AI`                                                          |
 | **Sector**   | `Enterprise Commercial` or `Public Sector` (short forms or full forms are accepted, the AI normalizes these) |
@@ -89,7 +89,7 @@ Team: AI Apps
 
 ### 1. Sourcing (Data Ingestion)
 
-- **Trigger Event:** Fires whenever a meeting forward arrives in the designated "shadow inbox" via the email connector.
+- **Trigger Event:** Fires whenever a meeting forward arrives in the designated shared inbox via the email connector.
 - **Processing Step:** The HTML structure of the raw meeting email is stripped into clean, standard text inside Logic Apps for parsing.
 
 ### 2. Formatting (AI Logic Mapping)
@@ -128,8 +128,7 @@ A user-facing application built on React that dynamically retrieves available sc
 - **Whitelist enforcement.** A preconfigured list of Belgium intern email addresses determines full access. The whitelist is stored as an environment variable on the backend and matched by alias prefix to handle cross-tenant UPNs.
 - **View-only access.** Authenticated users not on the whitelist can browse meetings but cannot join, leave, or add to calendar. Delete is still available for cleanup.
 - **ID token validation.** The backend validates Entra ID tokens using Microsoft's JWKS endpoint (`jwks-rsa`), checking audience, issuer, and signing key.
-- **Rate limiting.** Auth endpoints are limited to 10 requests per 15 minutes per IP. API endpoints are limited to 100 requests per 15 minutes per IP.
-- **Private shadow inbox.** The inbox address is not published anywhere in this repository or in the frontend. To obtain it, contact the project maintainer directly on Teams or Outlook.
+- **Private inbox.** The shared inbox address is not published anywhere in this repository or in the frontend. To obtain it, contact the project maintainer directly on Teams or Outlook.
 
 ## Deployment
 
@@ -144,15 +143,15 @@ All infrastructure is defined as Bicep templates in `azure/bicep/` with correspo
 
 ### Deployment Scripts
 
-| Script                                  | Purpose                                              |
-| --------------------------------------- | ---------------------------------------------------- |
-| `azure/scripts/deploy-all.ps1`          | Deploys all infrastructure (except backend code)     |
-| `azure/scripts/deploy-client.ps1`       | Builds and deploys frontend to Azure Static Web Apps |
-| `azure/scripts/deploy-server.ps1`       | Builds and deploys backend to Azure App Service      |
-| `azure/scripts/deploy-database.ps1`     | Deploys Cosmos DB infrastructure                     |
-| `azure/scripts/deploy-appservice.ps1`   | Deploys App Service infrastructure                   |
-| `azure/scripts/deploy-staticwebapp.ps1` | Deploys Static Web App infrastructure                |
-| `azure/scripts/deploy-logicapp.ps1`     | Deploys Logic App infrastructure                     |
+| Script                                  | Purpose                                                      |
+| --------------------------------------- | ------------------------------------------------------------ |
+| `azure/scripts/deploy-all.ps1`          | Deploys all infrastructure (except backend code)             |
+| `azure/scripts/deploy-client.ps1`       | Builds and deploys frontend to Azure Static Web Apps         |
+| `azure/scripts/deploy-server.ps1`       | Builds and deploys backend to Azure App Service (deprecated) |
+| `azure/scripts/deploy-database.ps1`     | Deploys Cosmos DB infrastructure                             |
+| `azure/scripts/deploy-appservice.ps1`   | Deploys App Service infrastructure (deprecated)              |
+| `azure/scripts/deploy-staticwebapp.ps1` | Deploys Static Web App infrastructure                        |
+| `azure/scripts/deploy-logicapp.ps1`     | Deploys Logic App infrastructure                             |
 
 ### Quick Start
 
@@ -173,18 +172,17 @@ All infrastructure is defined as Bicep templates in `azure/bicep/` with correspo
 
 **Backend (App Service):**
 
-| Variable                | Description                                     |
-| ----------------------- | ----------------------------------------------- |
-| `ENTRA_TENANT_ID`       | Entra ID directory (tenant) ID                  |
-| `ENTRA_CLIENT_ID`       | Entra ID application (client) ID                |
-| `COSMOS_ENDPOINT`       | Cosmos DB account endpoint                      |
-| `COSMOS_KEY`            | Cosmos DB account key                           |
-| `COSMOS_DATABASE`       | Cosmos DB database name                         |
-| `COSMOS_CONTAINER`      | Cosmos DB container name                        |
-| `RESEND_API_KEY`        | Resend email service API key                    |
-| `WHITELISTED_EMAILS`    | Comma-separated list of allowed email addresses |
-| `VIEWONLY_BYPASS_EMAIL` | Email that bypasses auth entirely (for demos)   |
-| `ALLOWED_ORIGINS`       | Comma-separated CORS origins                    |
+| Variable             | Description                                     |
+| -------------------- | ----------------------------------------------- |
+| `ENTRA_TENANT_ID`    | Entra ID directory (tenant) ID                  |
+| `ENTRA_CLIENT_ID`    | Entra ID application (client) ID                |
+| `COSMOS_ENDPOINT`    | Cosmos DB account endpoint                      |
+| `COSMOS_KEY`         | Cosmos DB account key                           |
+| `COSMOS_DATABASE`    | Cosmos DB database name                         |
+| `COSMOS_CONTAINER`   | Cosmos DB container name                        |
+| `RESEND_API_KEY`     | Resend email service API key                    |
+| `WHITELISTED_EMAILS` | Comma-separated list of allowed email addresses |
+| `ALLOWED_ORIGINS`    | Comma-separated CORS origins                    |
 
 **Frontend (client/src/utils/auth.ts):**
 
@@ -194,9 +192,8 @@ The Entra ID `clientId` and `authority` are configured directly in the MSAL conf
 
 1. Register a **single-page application** in Entra ID (multi-tenant)
 2. Add redirect URIs: `https://your-domain.com`, `http://localhost:5173`
-3. Under **Expose an API**, set the Application ID URI and add an `access_as_user` scope
-4. Under **Token configuration**, add the `email` optional claim for ID tokens
-5. Under **Supported account types**, select "Multiple Entra ID tenants"
+3. (optional) Under **Token configuration**, add the `email` optional claim for ID tokens
+4. Under **Supported account types**, select "Multiple Entra ID tenants"
 
 ### Post-Deployment: Authorize API Connections
 
