@@ -95,11 +95,27 @@ export function useFilteredMeetings(meetings: Meeting[], userEmail: string) {
       result = result.filter((m) => m.joined_interns.includes(userEmail));
     }
 
-    return [...result].sort((a, b) => {
+    const now = new Date().getTime();
+    const upcoming = result.filter(
+      (m) => new Date(`${m.date}T${m.end_time}`).getTime() >= now,
+    );
+    const expired = result.filter(
+      (m) => new Date(`${m.date}T${m.end_time}`).getTime() < now,
+    );
+
+    upcoming.sort((a, b) => {
       const dateA = new Date(`${a.date}T${a.start_time}`).getTime();
       const dateB = new Date(`${b.date}T${b.start_time}`).getTime();
-      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+      return sortOrder === "newest" ? dateA - dateB : dateB - dateA;
     });
+
+    expired.sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.start_time}`).getTime();
+      const dateB = new Date(`${b.date}T${b.start_time}`).getTime();
+      return dateB - dateA;
+    });
+
+    return [...upcoming, ...expired];
   }, [
     meetings,
     search,
@@ -247,7 +263,7 @@ export function FilterBar({
       </Dropdown>
 
       <Tooltip
-        content={sortOrder === "newest" ? "Newest first" : "Oldest first"}
+        content={sortOrder === "newest" ? "Soonest first" : "Latest first"}
         relationship="label"
       >
         <Button

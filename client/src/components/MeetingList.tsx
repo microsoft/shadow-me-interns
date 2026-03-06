@@ -185,16 +185,21 @@ export function MeetingList() {
             <EmptyState />
           ) : (
             <div className={styles.grid}>
-              {filtered.map((m) => (
-                <MeetingCard
-                  key={m.id}
-                  meeting={m}
-                  userEmail={email ?? ""}
-                  onJoin={setJoinTarget}
-                  onLeave={(mt) => leaveMutation.mutate(mt.id)}
-                  onDelete={setDeleteTarget}
-                />
-              ))}
+              {filtered.map((m) => {
+                const isExpired =
+                  new Date(`${m.date}T${m.end_time}`).getTime() < Date.now();
+                return (
+                  <MeetingCard
+                    key={m.id}
+                    meeting={m}
+                    userEmail={email ?? ""}
+                    expired={isExpired}
+                    onJoin={setJoinTarget}
+                    onLeave={(mt) => leaveMutation.mutate(mt.id)}
+                    onDelete={setDeleteTarget}
+                  />
+                );
+              })}
             </div>
           )}
         </>

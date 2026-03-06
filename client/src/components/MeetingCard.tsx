@@ -69,6 +69,7 @@ const useStyles = makeStyles({
 interface MeetingCardProps {
   meeting: Meeting;
   userEmail: string;
+  expired?: boolean;
   onJoin: (meeting: Meeting) => void;
   onLeave: (meeting: Meeting) => void;
   onDelete: (meeting: Meeting) => void;
@@ -96,6 +97,7 @@ function formatTime(time: string): string {
 export function MeetingCard({
   meeting,
   userEmail,
+  expired = false,
   onJoin,
   onLeave,
   onDelete,
@@ -106,6 +108,7 @@ export function MeetingCard({
   const isFull = spotsLeft <= 0;
   const hasJoined = meeting.joined_interns.includes(userEmail);
   const isViewOnly = userEmail === "viewonlybe@microsoft.com";
+  const isDisabled = isViewOnly || expired;
 
   /** Build an Outlook Web deep link that opens a pre-filled new event form. */
   const getOutlookLink = () => {
@@ -150,7 +153,7 @@ export function MeetingCard({
             appearance="subtle"
             icon={<DeleteRegular />}
             size="small"
-            disabled={isViewOnly}
+            disabled={isDisabled}
             onClick={() => onDelete(meeting)}
           />
         }
@@ -242,6 +245,12 @@ export function MeetingCard({
               Joined
             </Badge>
           )}
+
+          {expired && (
+            <Badge appearance="tint" color="danger">
+              Expired
+            </Badge>
+          )}
         </div>
 
         <div className={styles.actions}>
@@ -250,8 +259,8 @@ export function MeetingCard({
               appearance="subtle"
               icon={<CalendarAddRegular />}
               size="small"
-              disabled={isViewOnly}
-              {...(!isViewOnly && {
+              disabled={isDisabled}
+              {...(!isDisabled && {
                 as: "a" as const,
                 href: getOutlookLink(),
                 target: "_blank",
@@ -266,7 +275,7 @@ export function MeetingCard({
             <Button
               appearance="subtle"
               size="small"
-              disabled={isViewOnly}
+              disabled={isDisabled}
               onClick={() => onLeave(meeting)}
             >
               Leave
@@ -275,7 +284,7 @@ export function MeetingCard({
             <Button
               appearance="primary"
               size="small"
-              disabled={isFull || isViewOnly}
+              disabled={isFull || isDisabled}
               onClick={() => onJoin(meeting)}
             >
               Join
