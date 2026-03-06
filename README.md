@@ -119,6 +119,54 @@ A user-facing application built on React that dynamically retrieves available sc
 - **Session tokens.** After successful verification a signed JWT is issued (7-day expiry) and stored in the browser. Subsequent visits skip the login flow as long as the token is valid, keeping the experience frictionless.
 - **Private shadow inbox.** The inbox address is not published anywhere in this repository or in the frontend. To obtain it, contact the project maintainer directly on Teams or Outlook. This prevents external or automated misuse of the ingestion pipeline.
 
+## Deployment
+
+The Logic App infrastructure is defined as a Bicep template in `azure/logicapp.bicep`. It is fully parameterized so it can be deployed to any Azure subscription and resource group.
+
+### Prerequisites
+
+Before deploying the Logic App, the following API connections must already exist in the target resource group:
+
+| Connection Name     | Service            |
+| ------------------- | ------------------ |
+| `outlook`           | Outlook.com        |
+| `conversionservice` | Content Conversion |
+| `documentdb`        | Azure Cosmos DB    |
+
+### Parameters
+
+| Parameter                                    | Default                       | Description                    |
+| -------------------------------------------- | ----------------------------- | ------------------------------ |
+| `workflows_shadow_me_interns_logic_app_name` | `shadow_me_interns_logic_app` | Name of the Logic App resource |
+| `location`                                   | Resource group location       | Azure region for deployment    |
+| `cosmosDbAccountName`                        | `shadow-me-interns-db-msft`   | Cosmos DB account name         |
+| `cosmosDbDatabaseName`                       | `shadow_meetings`             | Cosmos DB database name        |
+| `cosmosDbContainerName`                      | `meetings`                    | Cosmos DB container name       |
+
+The subscription ID, resource group name, and connection resource IDs are automatically resolved from the deployment context.
+
+### Deploy
+
+```bash
+az deployment group create \
+  --resource-group <your-resource-group> \
+  --template-file azure/logicapp.bicep \
+  --parameters cosmosDbAccountName='<your-cosmos-account>'
+```
+
+Override additional parameters as needed:
+
+```bash
+az deployment group create \
+  --resource-group <your-resource-group> \
+  --template-file azure/logicapp.bicep \
+  --parameters \
+    cosmosDbAccountName='<your-cosmos-account>' \
+    cosmosDbDatabaseName='<your-database>' \
+    cosmosDbContainerName='<your-container>' \
+    location='westeurope'
+```
+
 ## Contributing
 
 The project is currently in preview phase and only available for Belgium, it may not be the optimal solution or might be missing critical features. If you have any suggestions or would like to contribute yourself, feel free to engage!
