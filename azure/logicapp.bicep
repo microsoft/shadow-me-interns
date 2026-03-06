@@ -3,13 +3,47 @@ param location string = resourceGroup().location
 param cosmosDbAccountName string = 'shadow-me-interns-db-msft'
 param cosmosDbDatabaseName string = 'shadow_meetings'
 param cosmosDbContainerName string = 'meetings'
-param connections_outlook_externalid string = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/connections/outlook'
-param connections_conversionservice_externalid string = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/connections/conversionservice'
-param connections_documentdb_externalid string = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Web/connections/documentdb'
+resource outlookConnection 'Microsoft.Web/connections@2016-06-01' = {
+  name: 'outlook'
+  location: location
+  properties: {
+    displayName: 'Outlook.com'
+    api: {
+      id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/outlook'
+    }
+  }
+}
+
+resource conversionserviceConnection 'Microsoft.Web/connections@2016-06-01' = {
+  name: 'conversionservice'
+  location: location
+  properties: {
+    displayName: 'Content Conversion'
+    api: {
+      id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/conversionservice'
+    }
+  }
+}
+
+resource documentdbConnection 'Microsoft.Web/connections@2016-06-01' = {
+  name: 'documentdb'
+  location: location
+  properties: {
+    displayName: 'Azure Cosmos DB'
+    api: {
+      id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/documentdb'
+    }
+  }
+}
 
 resource workflows_shadow_me_interns_logic_app_name_resource 'Microsoft.Logic/workflows@2017-07-01' = {
   name: workflows_shadow_me_interns_logic_app_name
   location: location
+  dependsOn: [
+    outlookConnection
+    conversionserviceConnection
+    documentdbConnection
+  ]
   properties: {
     state: 'Enabled'
     definition: {
@@ -320,20 +354,20 @@ resource workflows_shadow_me_interns_logic_app_name_resource 'Microsoft.Logic/wo
       '$connections': {
         value: {
           outlook: {
-            id: '/subscriptions/3aaf8f72-92bf-4f78-832b-80662cd35481/providers/Microsoft.Web/locations/swedencentral/managedApis/outlook'
-            connectionId: connections_outlook_externalid
+            id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/outlook'
+            connectionId: outlookConnection.id
             connectionName: 'outlook'
             connectionProperties: {}
           }
           conversionservice: {
-            id: '/subscriptions/3aaf8f72-92bf-4f78-832b-80662cd35481/providers/Microsoft.Web/locations/swedencentral/managedApis/conversionservice'
-            connectionId: connections_conversionservice_externalid
+            id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/conversionservice'
+            connectionId: conversionserviceConnection.id
             connectionName: 'conversionservice'
             connectionProperties: {}
           }
           'documentdb-1': {
-            id: '/subscriptions/3aaf8f72-92bf-4f78-832b-80662cd35481/providers/Microsoft.Web/locations/swedencentral/managedApis/documentdb'
-            connectionId: connections_documentdb_externalid
+            id: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Web/locations/${location}/managedApis/documentdb'
+            connectionId: documentdbConnection.id
             connectionName: 'documentdb'
             connectionProperties: {}
           }

@@ -125,13 +125,8 @@ The Logic App infrastructure is defined as a Bicep template in `azure/logicapp.b
 
 ### Prerequisites
 
-Before deploying the Logic App, the following API connections must already exist in the target resource group:
-
-| Connection Name     | Service            |
-| ------------------- | ------------------ |
-| `outlook`           | Outlook.com        |
-| `conversionservice` | Content Conversion |
-| `documentdb`        | Azure Cosmos DB    |
+- An Azure resource group in the target subscription.
+- An Azure Cosmos DB account with a database and container ready to receive documents.
 
 ### Parameters
 
@@ -143,7 +138,7 @@ Before deploying the Logic App, the following API connections must already exist
 | `cosmosDbDatabaseName`                       | `shadow_meetings`             | Cosmos DB database name        |
 | `cosmosDbContainerName`                      | `meetings`                    | Cosmos DB container name       |
 
-The subscription ID, resource group name, and connection resource IDs are automatically resolved from the deployment context.
+The subscription ID, resource group name, and API connection resources are automatically resolved and created by the template.
 
 ### Deploy
 
@@ -166,6 +161,14 @@ az deployment group create \
     cosmosDbContainerName='<your-container>' \
     location='westeurope'
 ```
+
+### Post-Deployment: Authorize API Connections
+
+The Bicep template creates the three API connections (Outlook, Content Conversion, Cosmos DB) automatically, but they require manual authorization after deployment:
+
+1. Go to the [Azure Portal](https://portal.azure.com) and navigate to your resource group.
+2. For each connection (`outlook`, `conversionservice`, `documentdb`), open the resource and click **Edit API connection**.
+3. Click **Authorize**, sign in with the appropriate account, and then **Save**.
 
 ## Contributing
 
