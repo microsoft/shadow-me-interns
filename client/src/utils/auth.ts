@@ -6,8 +6,8 @@ export const msalConfig = {
     authority: "https://login.microsoftonline.com/common",
     redirectUri:
       typeof window !== "undefined" && window.location.hostname !== "localhost"
-        ? "https://intern.support/auth/callback"
-        : "http://localhost:5173/auth/callback",
+        ? "https://intern.support"
+        : "http://localhost:5173",
   },
 };
 

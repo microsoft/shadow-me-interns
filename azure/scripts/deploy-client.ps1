@@ -21,6 +21,9 @@ Write-Host "Building client..." -ForegroundColor Cyan
 bun run build
 if ($LASTEXITCODE -ne 0) { Write-Error "Build failed"; exit 1 }
 
+# Copy static web app config to dist
+Copy-Item -Path "staticwebapp.config.json" -Destination "dist\" -ErrorAction SilentlyContinue
+
 # Deploy
 Write-Host "Deploying to Azure Static Web Apps (production)..." -ForegroundColor Cyan
 swa deploy ./dist --deployment-token $token --env production
