@@ -80,19 +80,14 @@ export const authMiddleware = async (
       return;
     }
 
-    if (!isWhitelisted(email)) {
-      res
-        .status(403)
-        .json({ message: "Email is not authorized to access this platform" });
-      return;
-    }
-
     // Normalize to @microsoft.com alias for consistency across the app
     const alias = email.split("@")[0]!;
     const normalizedEmail = `${alias}@microsoft.com`;
+    const whitelisted = isWhitelisted(email);
 
-    (req as Request & { user: { email: string } }).user = {
+    (req as Request & { user: { email: string; whitelisted: boolean } }).user = {
       email: normalizedEmail,
+      whitelisted,
     };
     next();
   } catch (err) {

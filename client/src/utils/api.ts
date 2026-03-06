@@ -32,7 +32,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 // ── Auth ────────────────────────────────────────────────────────────
 
-export const getMe = () => request<{ email: string }>("/api/auth/me");
+export const getMe = () => request<{ email: string; whitelisted: boolean }>("/api/auth/me");
 
 // ── Meetings ────────────────────────────────────────────────────────
 

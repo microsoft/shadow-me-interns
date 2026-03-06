@@ -70,6 +70,7 @@ interface MeetingCardProps {
   meeting: Meeting;
   userEmail: string;
   expired?: boolean;
+  isViewOnly?: boolean;
   onJoin: (meeting: Meeting) => void;
   onLeave: (meeting: Meeting) => void;
   onDelete: (meeting: Meeting) => void;
@@ -98,6 +99,7 @@ export function MeetingCard({
   meeting,
   userEmail,
   expired = false,
+  isViewOnly = false,
   onJoin,
   onLeave,
   onDelete,
@@ -107,7 +109,6 @@ export function MeetingCard({
   const spotsLeft = meeting.capacity - meeting.joined_interns.length;
   const isFull = spotsLeft <= 0;
   const hasJoined = meeting.joined_interns.includes(userEmail);
-  const isViewOnly = userEmail === "viewonlybe@microsoft.com";
   const isDisabled = isViewOnly || expired;
 
   /** Build an Outlook Web deep link that opens a pre-filled new event form. */

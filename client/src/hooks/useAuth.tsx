@@ -34,15 +34,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isLoading =
     inProgress !== InteractionStatus.None || checkingWhitelist;
 
-  // Once MSAL authenticates, verify against the backend whitelist
+  // Once MSAL authenticates, fetch user info from backend
   useEffect(() => {
     if (!isMsalAuthenticated || accounts.length === 0) return;
 
     setCheckingWhitelist(true);
     getMe()
-      .then(({ email: userEmail }) => {
+      .then(({ email: userEmail, whitelisted }) => {
         setEmail(userEmail);
-        setIsWhitelisted(true);
+        setIsWhitelisted(whitelisted);
         setWhitelistError(false);
       })
       .catch(() => {
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: isMsalAuthenticated && isWhitelisted,
+        isAuthenticated: isMsalAuthenticated && !whitelistError,
         isWhitelisted,
         email,
         isLoading,

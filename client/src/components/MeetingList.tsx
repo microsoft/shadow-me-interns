@@ -59,7 +59,7 @@ const useStyles = makeStyles({
 
 export function MeetingList() {
   const styles = useStyles();
-  const { email } = useAuth();
+  const { email, isWhitelisted } = useAuth();
   const { data: meetings = [], isLoading, error } = useMeetings();
   const { dispatchToast } = useToastController("global");
   const queryClient = useQueryClient();
@@ -194,6 +194,7 @@ export function MeetingList() {
                     meeting={m}
                     userEmail={email ?? ""}
                     expired={isExpired}
+                    isViewOnly={!isWhitelisted}
                     onJoin={setJoinTarget}
                     onLeave={(mt) => leaveMutation.mutate(mt.id)}
                     onDelete={setDeleteTarget}

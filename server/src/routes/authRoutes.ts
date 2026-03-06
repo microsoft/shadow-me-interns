@@ -11,8 +11,8 @@ const router = Router();
  * handles token validation and whitelist checking.
  */
 router.get("/me", authMiddleware, (req: Request, res: Response) => {
-  const email = (req as Request & { user: { email: string } }).user.email;
-  res.json({ email });
+  const { email, whitelisted } = (req as Request & { user: { email: string; whitelisted: boolean } }).user;
+  res.json({ email, whitelisted });
 });
 
 export default router;
