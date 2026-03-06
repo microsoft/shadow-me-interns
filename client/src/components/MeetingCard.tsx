@@ -153,7 +153,7 @@ export function MeetingCard({
             appearance="subtle"
             icon={<DeleteRegular />}
             size="small"
-            disabled={isDisabled}
+            disabled={isViewOnly}
             onClick={() => onDelete(meeting)}
           />
         }
