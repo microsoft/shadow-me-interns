@@ -10,7 +10,7 @@ This project establishes a centralized platform enabling interns in Belgium to e
 
 ## Demo
 
-<video src="demo_intern_support.mp4" controls width="100%"></video>
+[<video src="demo_intern_support.mp4" controls width="100%"></video>](https://github.com/user-attachments/assets/2c223c26-6816-4eac-86c9-87d9829a7976)
 
 ## Why This Exists
 
