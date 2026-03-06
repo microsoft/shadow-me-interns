@@ -58,6 +58,11 @@ Write-Host "  All deployments complete!" -ForegroundColor Green
 Write-Host "================================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Post-deployment steps:" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "  [!] The App Service backend code is NOT deployed by this script." -ForegroundColor Red
+Write-Host "      Deploy it manually via VS Code: right-click server/ > Deploy to Web App." -ForegroundColor Red
+Write-Host "      See README for full instructions." -ForegroundColor Red
+Write-Host ""
 Write-Host "  1. Configure App Service env vars (ENTRA_TENANT_ID, ENTRA_CLIENT_ID, COSMOS_KEY, etc.)"
 Write-Host "  2. Authorize Logic App API connections (Outlook, Content Conversion, Cosmos DB)"
 Write-Host "  3. Set ALLOWED_ORIGINS on App Service to include Static Web App URLs"
