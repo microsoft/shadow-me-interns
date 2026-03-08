@@ -3,7 +3,7 @@
 > [!WARNING]
 > Due to security not being reviewed officially by Microsoft, this tool is not live and should not be put live by anyone for the time being. If you know someone who can help approve this tool to be put online without security issues, contact Aryan Shah on Teams.
 
-**This platform allows Interns to get access to real customer-facing meetings, and FTEs get a frictionless way to find intern support for their meetings without extra coordination overhead.**
+**This platform allows Interns to get access to real customer-facing meetings/projects, and FTEs get a frictionless way to find intern support for their meetings without extra coordination overhead.**
 
 https://intern.support - not live
 
