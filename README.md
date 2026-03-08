@@ -23,6 +23,7 @@ As an intern, joining customer-facing meetings is one of the most effective ways
 - **FTEs forget.** Even when an FTE agrees, they may forget to loop the intern in when the meeting actually happens, or not know which intern to invite.
 - **Some FTEs are too new themselves.** Not every FTE is in a position to bring interns into their calls, making cold outreach a gamble.
 - **Some meetings are not suitable.** Some meetings might be sensitive or the customer might prefer to not have interns join.
+- **FTEs don't know which intern to ask** Even if the FTE has an intern-friendly opportunity, they usually don't know all interns or don't know which intern(s) would be able to support them.
 
 The core problem: there was no central place where interns could browse meetings that are explicitly available for them to join.
 
