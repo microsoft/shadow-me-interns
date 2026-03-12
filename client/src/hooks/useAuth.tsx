@@ -10,6 +10,9 @@ import {
 } from "react";
 import { loginRequest, msalInstance } from "../utils/auth";
 import { getMe } from "../utils/api";
+import { useSessionTimeout } from "./useSessionTimeout";
+
+const SESSION_START_KEY = "session_start_ts";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -57,8 +60,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
+    // REQ-356: Explicitly destroy the session
+    // 1. Clear the absolute-session timestamp
+    sessionStorage.removeItem(SESSION_START_KEY);
+
+    // 2. Clear all MSAL cache entries from storage
+    const msalKeys = Object.keys(sessionStorage).filter(
+      (k) => k.startsWith("msal.") || k.startsWith("login."),
+    );
+    for (const key of msalKeys) {
+      sessionStorage.removeItem(key);
+    }
+
+    // 3. Redirect to Entra sign-out (clears the SSO session cookie)
     msalInstance.logoutRedirect();
   }, []);
+
+  // REQ-356: 30-min idle timeout & 8-hour absolute timeout
+  useSessionTimeout(logout, isMsalAuthenticated);
 
   return (
     <AuthContext.Provider

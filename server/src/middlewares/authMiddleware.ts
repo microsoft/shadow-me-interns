@@ -4,6 +4,9 @@ import jwksClient from "jwks-rsa";
 import config from "../config/config";
 import { isWhitelisted } from "../utils/whitelist";
 
+/** REQ-356: Maximum absolute session lifetime (seconds). */
+const MAX_TOKEN_AGE_SECONDS = 8 * 60 * 60; // 8 hours
+
 const client = jwksClient({
   jwksUri: "https://login.microsoftonline.com/common/discovery/v2.0/keys",
   cache: true,
@@ -58,12 +61,23 @@ export const authMiddleware = async (
     const payload = jwt.verify(token, signingKey, {
       audience: config.entra.clientId,
       algorithms: ["RS256"],
-    }) as EntraTokenPayload & { iss?: string };
+    }) as EntraTokenPayload & { iss?: string; iat?: number };
 
     // Validate issuer is a Microsoft tenant
     if (!payload.iss?.startsWith("https://login.microsoftonline.com/")) {
       res.status(401).json({ message: "Invalid token issuer" });
       return;
+    }
+
+    // REQ-356: Reject tokens older than the absolute session limit (8 hours)
+    if (payload.iat) {
+      const tokenAgeSec = Math.floor(Date.now() / 1000) - payload.iat;
+      if (tokenAgeSec > MAX_TOKEN_AGE_SECONDS) {
+        res
+          .status(401)
+          .json({ message: "Session expired, please log in again" });
+        return;
+      }
     }
 
     const email = (
@@ -85,10 +99,11 @@ export const authMiddleware = async (
     const normalizedEmail = `${alias}@microsoft.com`;
     const whitelisted = isWhitelisted(email);
 
-    (req as Request & { user: { email: string; whitelisted: boolean } }).user = {
-      email: normalizedEmail,
-      whitelisted,
-    };
+    (req as Request & { user: { email: string; whitelisted: boolean } }).user =
+      {
+        email: normalizedEmail,
+        whitelisted,
+      };
     next();
   } catch (err) {
     console.error("Token validation failed:", err);
